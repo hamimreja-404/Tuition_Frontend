@@ -13,6 +13,7 @@ function App() {
         {/* Parent layout */}
         <Route path="/" element={<Layout />}>
           {/* Nested routes inside Layout */}
+          <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="answerKey" element={<Files />} />
           <Route path="Sign_up" element={<Register />} />

@@ -81,7 +81,7 @@ export default function Files() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FFF9F4] py-12 px-6">
+    <div className="min-h-screen bg-[#FFF9F4] py-12 px-6 mt-10">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold mb-8 text-center font-serif italic">
           📂 Available Files
