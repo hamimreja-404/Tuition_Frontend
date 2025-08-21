@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import TestimonialsSection from "./Testimonials";
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+import Pic from "../assets/Pic.jpg";
 
 const Home = () => {
 
@@ -27,7 +27,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
               <img
-                src="src/assets/Pic.jpg"
+                src= {Pic}
                 alt="Student"
                 className="rounded-xl w-full shadow-md"
               />

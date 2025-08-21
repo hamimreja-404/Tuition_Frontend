@@ -46,7 +46,12 @@ export default function Navbar() {
                   } else if (id.toLowerCase() === "answer key") {
                     navigate("/answerKey"); // create route if needed
                     setIsOpen(false);
-                  } else {
+                  }
+                  else if(id.toLowerCase() ==="home" || id.toLowerCase() ==="about" || id.toLowerCase() ==="courses" || id.toLowerCase() ==="testimonials" || id.toLowerCase() ==="fees" || id.toLowerCase() ==="contact") {
+                    navigate("/home"); // create route if needed
+                    setIsOpen(false);
+                  }
+                  else {
                     navigate("/home"); // create route if needed
                     setIsOpen(false);
                   }
@@ -90,7 +95,11 @@ export default function Navbar() {
                   } else if (id.toLowerCase() === "answer key") {
                     navigate("/answerKey"); // create route if needed
                     setIsOpen(false);
-                  } else {
+                  }else if(id.toLowerCase() ==="home" || id.toLowerCase() ==="about" || id.toLowerCase() ==="courses" || id.toLowerCase() ==="testimonials" || id.toLowerCase() ==="fees" || id.toLowerCase() ==="contact") {
+                    navigate("/home"); // create route if needed
+                    setIsOpen(false);
+                  }
+                  else {
                     handleNavClick(id); // scroll for others
                   }
                 }}
