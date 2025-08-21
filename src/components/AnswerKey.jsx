@@ -8,7 +8,7 @@
 //   useEffect(() => {
 //     const fetchFiles = async () => {
 //       try {
-//         const res = await fetch( `${import.meta.env.VITE_API_URL}get_files`,); 
+//         const res = await fetch( `${import.meta.env.VITE_API_URL}get_files`,);
 //         const data = await res.json();
 //         if (data.success) {
 //           setFiles(data.data); // ApiResponse => data
@@ -57,7 +57,6 @@
 //   );
 // }
 
-
 // src/components/Files.jsx
 import React, { useEffect, useState } from "react";
 
@@ -68,7 +67,9 @@ export default function Files() {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const res = await await fetch( `${import.meta.env.VITE_API_URL}get_files`); 
+        const res = await await fetch(
+          `${import.meta.env.VITE_API_URL}get_files`
+        );
         const data = await res.json();
         if (data.success) {
           setFiles(data.data); // ApiResponse => data
@@ -79,6 +80,14 @@ export default function Files() {
     };
     fetchFiles();
   }, []);
+  const handleDownload = (url, filename) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename || "download"; // fallback filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="min-h-screen bg-[#FFF9F4] py-12 px-6 mt-10">
@@ -113,8 +122,9 @@ export default function Files() {
                     Uploaded on {new Date(file.createdAt).toLocaleDateString()}
                   </p>
 
+                  {/* Download Button */}
                   <button
-                    onClick={() => window.open(file.path, "_blank")}
+                    onClick={() => handleDownload(file.path, file.title)}
                     className="mt-auto bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition"
                   >
                     ⬇️ Download
