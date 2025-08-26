@@ -16,8 +16,10 @@ function App() {
       <Routes>
         {/* Parent layout */}
         <Route path="/" element={<Layout />}>
-          <Route path="/home" element={<Home />} />
-          {/* <Route path="/home" element={<Home />} /> */}
+          {/* 👇 THIS IS THE FIX 👇 */}
+          <Route index element={<Home />} /> 
+          
+          {/* Other child routes */}
           <Route path="academics" element={<Academics />} />
           <Route path="admission" element={<Admission />} />
           <Route path="exams" element={<Exam />} />
