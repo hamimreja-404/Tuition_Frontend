@@ -19,6 +19,7 @@ function App() {
           {/* 👇 THIS IS THE FIX 👇 */}
           <Route index element={<Home />} /> 
           
+          <Route path="home" element={<Home />} />
           {/* Other child routes */}
           <Route path="academics" element={<Academics />} />
           <Route path="admission" element={<Admission />} />
