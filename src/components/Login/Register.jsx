@@ -30,6 +30,7 @@ export default function Register() {
       );
 
       toast.success("🎉 Registration successful! Redirecting...");
+      localStorage.setItem("adminAuthToken", response.data.token);
       setTimeout(() => {
         navigate("/adminDashboard");
       }, 1500);
@@ -61,7 +62,7 @@ export default function Register() {
         <h2 className="flex items-center mb-6 text-2xl font-bold text-gray-900 ">
           Admin Registration
         </h2>
-        <div className="w-full bg-blue-100 rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0  border border-blue-200">         
+        <div className="w-full bg-blue-100 rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0  border border-blue-200">
           <div className="p-6 space-y-6 sm:p-8">
             <h1 className="text-xl font-semibold leading-tight tracking-tight text-gray-900 md:text-2xl">
               Create Your Admin Account
@@ -198,7 +199,7 @@ export default function Register() {
                 Already have an account?{" "}
                 <Link
                   className="font-medium text-blue-600 hover:underline "
-                  to="/login"
+                  to="/adminLogin"
                 >
                   Login here
                 </Link>
