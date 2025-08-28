@@ -11,6 +11,7 @@ import {
   Menu,
   PlusCircle,
   Trash2,
+  Loader2, // Added for loading spinner icon
 } from "lucide-react";
 import axios from "axios";
 
@@ -107,6 +108,7 @@ const AdminSidebar = ({
 const UploadPanel = ({ type }) => {
   const [title, setTitle] = useState("");
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handlePublish = async () => {
     if (!title.trim() || !file) {
@@ -115,28 +117,33 @@ const UploadPanel = ({ type }) => {
       );
       return;
     }
+
+    setIsLoading(true);
+    const toastId = toast.loading(`Uploading ${type}...`);
     const formData = new FormData();
     formData.append("title", title);
     formData.append("file", file);
-    toast.loading(`Uploading ${type}...`);
+
     try {
       const result = await axios.post(
         `${import.meta.env.VITE_API_URL}upload_files`,
         formData
       );
-      toast.dismiss();
       if (result.data?.success || result.status === 201) {
-        toast.success(`${type} published successfully!`);
+        toast.success(`${type} published successfully!`, { id: toastId });
         setTitle("");
         setFile(null);
         document.getElementById(`file-input-${type}`).value = "";
       } else {
-        toast.error(result.data?.message || `Failed to upload ${type}.`);
+        toast.error(result.data?.message || `Failed to upload ${type}.`, {
+          id: toastId,
+        });
       }
     } catch (error) {
-      toast.dismiss();
       console.error(`Upload error for ${type}:`, error.message);
-      toast.error(`Failed to upload ${type}!`);
+      toast.error(`Failed to upload ${type}!`, { id: toastId });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -152,6 +159,7 @@ const UploadPanel = ({ type }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          disabled={isLoading}
         />
         <input
           id={`file-input-${type}`}
@@ -159,12 +167,21 @@ const UploadPanel = ({ type }) => {
           accept="application/pdf"
           onChange={(e) => setFile(e.target.files[0])}
           className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+          disabled={isLoading}
         />
         <button
           onClick={handlePublish}
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          disabled={isLoading}
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center disabled:bg-indigo-300"
         >
-          Publish {type}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Publishing...
+            </>
+          ) : (
+            `Publish ${type}`
+          )}
         </button>
       </div>
     </div>
@@ -181,13 +198,14 @@ const UpcomingExamsPanel = () => {
     appEndDate: "",
     examDate: "",
   });
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setExamDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePublishExam = () => {
+  const handlePublishExam = async () => {
     // Basic validation
     for (const key in examDetails) {
       if (!examDetails[key]) {
@@ -199,17 +217,34 @@ const UpcomingExamsPanel = () => {
         return;
       }
     }
-    // Logic to publish exam details to the backend
-    console.log("Publishing Exam:", examDetails);
-    toast.success("Upcoming exam details published successfully!");
-    setExamDetails({
-      title: "",
-      eligibility: "",
-      fee: "",
-      appStartDate: "",
-      appEndDate: "",
-      examDate: "",
-    });
+    
+    setIsLoading(true);
+    const toastId = toast.loading("Publishing exam details...");
+    
+    try {
+      const result = await axios.post(
+        `${import.meta.env.VITE_API_URL}upload-Upcoming-Exam`,
+        examDetails
+      );
+      if (result.data?.success || result.status === 201) {
+        toast.success("Exam published successfully!", { id: toastId });
+        setExamDetails({
+          title: "",
+          eligibility: "",
+          fee: "",
+          appStartDate: "",
+          appEndDate: "",
+          examDate: "",
+        });
+      } else {
+        toast.error(result.data?.message || "Failed to publish exam.", { id: toastId });
+      }
+    } catch (error) {
+      console.error("Publish exam error:", error);
+      toast.error("Failed to publish exam!", { id: toastId });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -225,6 +260,7 @@ const UpcomingExamsPanel = () => {
           value={examDetails.title}
           onChange={handleChange}
           className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none md:col-span-2"
+          disabled={isLoading}
         />
         <input
           type="text"
@@ -233,6 +269,7 @@ const UpcomingExamsPanel = () => {
           value={examDetails.eligibility}
           onChange={handleChange}
           className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          disabled={isLoading}
         />
         <input
           type="number"
@@ -241,6 +278,7 @@ const UpcomingExamsPanel = () => {
           value={examDetails.fee}
           onChange={handleChange}
           className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          disabled={isLoading}
         />
         <div>
           <label className="text-sm text-slate-500">
@@ -252,6 +290,7 @@ const UpcomingExamsPanel = () => {
             value={examDetails.appStartDate}
             onChange={handleChange}
             className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+            disabled={isLoading}
           />
         </div>
         <div>
@@ -262,6 +301,7 @@ const UpcomingExamsPanel = () => {
             value={examDetails.appEndDate}
             onChange={handleChange}
             className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+            disabled={isLoading}
           />
         </div>
         <div className="md:col-span-2">
@@ -272,14 +312,23 @@ const UpcomingExamsPanel = () => {
             value={examDetails.examDate}
             onChange={handleChange}
             className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+            disabled={isLoading}
           />
         </div>
       </div>
       <button
         onClick={handlePublishExam}
-        className="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+        disabled={isLoading}
+        className="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center disabled:bg-indigo-300"
       >
-        Publish Exam
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Publishing...
+          </>
+        ) : (
+          "Publish Exam"
+        )}
       </button>
     </div>
   );
@@ -289,6 +338,7 @@ const UpcomingExamsPanel = () => {
 const UploadMarksheetPanel = () => {
   const [examTitle, setExamTitle] = useState("");
   const [students, setStudents] = useState([{ roll: "", marks: "" }]);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handleStudentChange = (index, event) => {
     const values = [...students];
@@ -313,11 +363,23 @@ const UploadMarksheetPanel = () => {
       toast.error("Please provide an exam title.");
       return;
     }
-    // Logic to publish marksheet to backend
-    console.log("Publishing Marksheet for:", examTitle, students);
-    toast.success("Marksheet published successfully!");
-    setExamTitle("");
-    setStudents([{ roll: "", marks: "" }]);
+    
+    setIsLoading(true);
+    const toastId = toast.loading("Publishing marksheet...");
+
+    // NOTE: Replace this with your actual API call
+    setTimeout(() => {
+        try {
+            console.log("Publishing Marksheet for:", examTitle, students);
+            toast.success("Marksheet published successfully!", { id: toastId });
+            setExamTitle("");
+            setStudents([{ roll: "", marks: "" }]);
+        } catch (error) {
+            toast.error("Failed to publish marksheet.", { id: toastId });
+        } finally {
+            setIsLoading(false);
+        }
+    }, 1500); // Simulating network delay
   };
 
   return (
@@ -331,6 +393,7 @@ const UploadMarksheetPanel = () => {
         value={examTitle}
         onChange={(e) => setExamTitle(e.target.value)}
         className="w-full border rounded-lg px-3 py-2 mb-4 focus:ring-2 focus:ring-indigo-400 outline-none"
+        disabled={isLoading}
       />
 
       <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
@@ -343,6 +406,7 @@ const UploadMarksheetPanel = () => {
               value={student.roll}
               onChange={(e) => handleStudentChange(index, e)}
               className="w-1/2 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+              disabled={isLoading}
             />
             <input
               type="number"
@@ -351,11 +415,12 @@ const UploadMarksheetPanel = () => {
               value={student.marks}
               onChange={(e) => handleStudentChange(index, e)}
               className="w-1/2 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+              disabled={isLoading}
             />
             <button
               onClick={() => handleRemoveStudent(index)}
               className="p-2 text-red-500 hover:bg-red-100 rounded-full disabled:opacity-50"
-              disabled={students.length === 1}
+              disabled={students.length === 1 || isLoading}
             >
               <Trash2 size={18} />
             </button>
@@ -365,15 +430,24 @@ const UploadMarksheetPanel = () => {
 
       <button
         onClick={handleAddStudent}
-        className="flex items-center gap-2 text-sm text-indigo-600 font-medium mt-4 hover:text-indigo-800"
+        className="flex items-center gap-2 text-sm text-indigo-600 font-medium mt-4 hover:text-indigo-800 disabled:text-slate-400"
+        disabled={isLoading}
       >
         <PlusCircle size={16} /> Add Another Student
       </button>
       <button
         onClick={handlePublishMarks}
-        className="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+        disabled={isLoading}
+        className="w-full mt-6 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center disabled:bg-indigo-300"
       >
-        Publish Marksheet
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Publishing...
+          </>
+        ) : (
+          "Publish Marksheet"
+        )}
       </button>
     </div>
   );
@@ -412,7 +486,7 @@ const DashboardPanel = ({ visitorCount }) => {
 
 // --- 7. Main Admin Dashboard Component ---
 export default function AdminDashboard_1() {
-  const [visitorCount,setVisitorCount] = useState(0);
+  const [visitorCount, setVisitorCount] = useState(0);
   const [adminName] = useState("Arghya");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -426,12 +500,12 @@ export default function AdminDashboard_1() {
           console.log("Visitor count fetched:", data.count);
         } else {
           console.error("API call was not successful:", data);
-          setVisitorCount([]); // Set to empty array on API error
+          setVisitorCount(0); // Set to 0 on API error
         }
       } catch (err) {
         console.error("Error fetching files:", err);
-        setVisitorCount([]); // Ensure files are empty on fetch failure
-      } 
+        setVisitorCount(0); // Ensure files are 0 on fetch failure
+      }
     };
     fetchVisitor();
   }, []);
