@@ -6,46 +6,55 @@ export default function FeeStructureSection() {
   // Data for the pricing plans
   const plans = [
     {
-      title: "Monthly Plan",
-      price: "150",
+      title: "Baguiati XI",
+      price: "1500",
       duration: "/month",
       features: [
-        "8 Live Classes",
+        "Live Classes",
         "Weekly Quizzes",
-        "Doubt Clearing Sessions",
-        "Access to Recorded Lectures"
+        "Doubt Clearing Sessions"
       ],
-      icon: <Calendar className="w-8 h-8 text-indigo-500" />,
-      color: "indigo",
-      popular: false
+      icon: <Shield className="w-8 h-8 text-purple-500" />,
+      color: "indigo"
     },
     {
-      title: "Quarterly Plan",
-      price: "400",
-      duration: "/quarter",
+      title: "Baguiati XII",
+      price: "1700",
+      duration: "/month",
       features: [
-        "24 Live Classes",
+        "Live Classes",
         "Bi-Weekly Mock Tests",
         "Personalized Mentorship",
         "All Monthly Plan Benefits"
       ],
       icon: <Shield className="w-8 h-8 text-purple-500" />,
-      color: "purple",
-      popular: true
+      color: "purple"
     },
     {
-      title: "Yearly Plan",
-      price: "1200",
-      duration: "/year",
+      title: "Behala XI",
+      price: "1000",
+      duration: "/month",
       features: [
-        "96+ Live Classes",
+        "Live Classes",
         "Full Syllabus Coverage",
         "Dedicated Exam Prep",
         "All Quarterly Plan Benefits"
       ],
       icon: <Award className="w-8 h-8 text-pink-500" />,
-      color: "pink",
-      popular: false
+      color: "pink"
+    },
+    {
+      title: "Behala XII",
+      price: "1200",
+      duration: "/month",
+      features: [
+        "Live Classes",
+        "Full Syllabus Coverage",
+        "Dedicated Exam Prep",
+        "All Quarterly Plan Benefits"
+      ],
+      icon: <Award className="w-8 h-8 text-pink-500" />,
+      color: "pink"
     }
   ];
 
@@ -75,20 +84,16 @@ export default function FeeStructureSection() {
 const PricingCard = ({ plan }) => {
     
   const colorClasses = {
-    border: plan.popular ? `border-${plan.color}-500` : 'border-slate-200',
-    buttonBg: `bg-${plan.color}-500`,
-    buttonHoverBg: `hover:bg-${plan.color}-600`,
+    border: 'border-slate-200',
+    buttonBg: `bg-[#4f39f0]`,
+    buttonHoverBg: `hover:bg-[#3f27f4]`,
     popularBg: `bg-${plan.color}-500`,
-    iconBg: `bg-${plan.color}-100`
+    iconBg: `bg-[#cfe2f3]`
   };
 
   return (
     <div className={`relative border-2 ${colorClasses.border} rounded-xl shadow-lg bg-white flex flex-col transform hover:scale-105 transition-transform duration-300`}>
-      {plan.popular && (
-        <div className={`absolute top-0 right-6 -mt-4 text-white text-sm font-bold px-4 py-1 rounded-full shadow-md ${colorClasses.popularBg}`}>
-          Most Popular
-        </div>
-      )}
+
       <div className="p-8 flex-grow flex flex-col">
         <div className="flex items-center mb-6">
           <div className={`p-3 rounded-full mr-4 ${colorClasses.iconBg}`}>
@@ -97,7 +102,7 @@ const PricingCard = ({ plan }) => {
           <h3 className="text-2xl font-bold text-slate-800">{plan.title}</h3>
         </div>
         <div className="mb-6">
-          <span className="text-5xl font-extrabold text-slate-900">${plan.price}</span>
+          <span className="text-5xl font-extrabold text-slate-900">₹{plan.price}</span>
           <span className="text-slate-500 font-medium">{plan.duration}</span>
         </div>
         <ul className="space-y-4 mb-8 text-slate-600 flex-grow">

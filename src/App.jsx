@@ -8,34 +8,10 @@ import Exam from "./components/Exam/Exam.jsx";
 import ContactUsPage from "./components/Contact/Contact.jsx";
 import Login from "./components/Login/Login.jsx";
 import Register from "./components/Login/Register.jsx";
-// import AdminDashboard from "./components/dashbord/AdminDasbord.jsx";
 import AdminDashboard_1 from "./components/Admin/AdminControl.jsx";
 import ProtectedRoute from "./components/Admin/ProtectedRoute.jsx";
+import AddStudentForm from "./components/Exam/FromFillup.jsx";
 
-// function App() {
-//   return (
-//     <Router>
-//       <Routes>
-//         {/* Parent layout */}
-//         <Route path="/" element={<Layout />}>
-//           {/* 👇 THIS IS THE FIX 👇 */}
-//           <Route index element={<Home />} />
-
-//           <Route path="home" element={<Home />} />
-//           {/* Other child routes */}
-//           <Route path="academics" element={<Academics />} />
-//           <Route path="admission" element={<Admission />} />
-//           <Route path="exams" element={<Exam />} />
-//           <Route path="contact" element={<ContactUsPage />} />
-//           <Route path="Sign_up" element={<Register />} />
-//           <Route path="adminLogin" element={<Login />} />
-//           <Route path="adminDashboard" element={<AdminDashboard_1 />} />
-//           {/* <Route path="adminDashboard" element={<AdminDashboard />} /> */}
-//         </Route>
-//       </Routes>
-//     </Router>
-//   );
-// }
 function App() {
   return (
     <Router>
@@ -53,7 +29,15 @@ function App() {
         {/* Routes WITHOUT Navbar and Footer */}
         <Route path="Sign_up" element={<Register />} />
         <Route path="adminLogin" element={<Login />} />
+        
+        {/* --- THIS IS THE CORRECTED ROUTE --- */}
+        {/* It now has :examName and :examDate as placeholders */}
+        <Route 
+          path="/apply/:examName/:examDate" 
+          element={<AddStudentForm />} 
+        />
 
+        {/* Protected Admin Route */}
         <Route element={<ProtectedRoute />}>
           <Route path="adminDashboard" element={<AdminDashboard_1 />} />
         </Route>
@@ -61,4 +45,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;
